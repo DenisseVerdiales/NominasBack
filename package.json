@@ -1,0 +1,34 @@
+{
+  "name": "nominas",
+  "version": "1.0.0",
+  "description": "nominas back",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Cynthia Denisse Verdiales",
+  "license": "ISC",
+  "dependencies": {
+    "bwip-js": "^1.6.3",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "express": "^4.16.3",
+    "handlebars": "^4.1.0",
+    "handlebars-intl": "^1.1.2",
+    "multer": "^1.3.0",
+    "mysql2": "^1.5.3",
+    "node-cron": "^2.0.3",
+    "nodemailer": "^4.6.4",
+    "nodemon": "^1.17.5",
+    "router": "^1.3.5",
+    "sequelize": "^4.37.5",
+    "wkhtmltopdf": "^0.3.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  },
+  "engines": {
+    "node": "10.3.0"
+  }
+}
