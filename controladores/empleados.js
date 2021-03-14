@@ -6,11 +6,13 @@ const validarToken = require('../utilidades/verificarToken');
 const empleadosModelo = require('./../modelos/empleado-modelo');
 
 
-router.post('/', validarToken, function (req, res) {
+router.post('/', function (req, res) {
     var empleado = req.body;
-
+    console.log("DATOS",req);
+    empleado.activo= true;
     empleado.fechaCreacion = new Date();
     empleadosModelo.Crear(empleado, function (nuevo) {
+      console.log("CREAR",nuevo);
       if (!nuevo) {
         return res.status(400).send("El empleado ingresado ya existe.");
       }
@@ -19,6 +21,7 @@ router.post('/', validarToken, function (req, res) {
         return res.status(200).send(respuestaModelo);
     
     }, function (error) {
+      console.log("ERROR",error);
       return res.status(501).send(error);
     });
   });

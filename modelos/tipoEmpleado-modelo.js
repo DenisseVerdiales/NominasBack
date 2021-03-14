@@ -30,11 +30,11 @@ const tipoEmpleado = sequelize.define('TipoEmpleado', {
     tipoEmpleado
     .findAll({
       where: {
-        Activo: { [operadores.eq]: true },
+        activo: true
       },
     })
     .then(exito, error);
-};
+  };
 
 
   module.exports = tipoEmpleado;

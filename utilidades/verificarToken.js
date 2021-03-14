@@ -2,7 +2,7 @@ const sesionesModelo = require('../modelos/Sesiones-modelo');
 
 function VerificarToken(req, res, next){
   const apiToken = req.get("APITOKEN");
-
+console.log("TOKEN",req.get("APITOKEN"));
   if (req.method === 'OPTIONS')
     return next();
 

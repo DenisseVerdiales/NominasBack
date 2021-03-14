@@ -21,6 +21,7 @@ const usuarios = sequelize.define('Usuarios', {
 );
 
 usuarios.ObtenerPorNombreContrasena = function (usuario, exito, error) {
+  console.log("usuario",usuario);
   usuarios.findOne({
     where: {
       nombreUsuario: usuario.nombreUsuario ,
@@ -29,6 +30,7 @@ usuarios.ObtenerPorNombreContrasena = function (usuario, exito, error) {
   }).then(function (usuario) {
     exito(usuario);
   }, function (err) {
+    console.log("err",err);
     error(err);
   });
 }

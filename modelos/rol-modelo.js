@@ -1,48 +1,39 @@
 'use strict';
 const sequelize = require('./../bdconfig');
 const Sequelize = require('sequelize');
+const usuariosModelo = require('./usuarios-modelo');
 
-const Rol = sequelize.define('Rol', {
+const rol = sequelize.define('Rol', {
     id: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
       },
-      nombreRol: {
-        type: Sequelize.DataTypes.STRING(50),
-        allowNull: false,
-        defaultValue:''
-      },
-      activo: {
-        type: Sequelize.DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
-      },
-      fechaCreacion: {
-        type: Sequelize.DataTypes.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      usuarioCreacionId: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        references: {
-          model: 'Usuarios',
-          key: 'id'
-        }
-      },
-      fechaModificacion: {
-        type: Sequelize.DataTypes.DATE,
-        allowNull: true
-      },
-      usuarioModificacionId: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        references: {
-          model: 'Usuarios',
-          key: 'id'
-        }
-      }
+      nombreRol: Sequelize.STRING,
+      activo: Sequelize.BOOLEAN,
+      fechaCreacion: Sequelize.DATE,
+      usuarioCreacionId: Sequelize.INTEGER,
+      fechaModificacion: Sequelize.DATE,
+      usuarioModificacionId: Sequelize.INTEGER,
+  },{
+    timestamps: false,
+    freezeTableName: true
   });
-  module.exports = Rol;
+
+  rol.belongsTo(usuariosModelo, {
+    as: "Usuarios",
+    foreignKey: { fieldName: "usuarioCreacionId" },
+  });
+  
+  rol.ObtenerActivos = function (exito, error) {
+    rol
+    .findAll({
+      where: {
+        activo: true
+      },
+    })
+    .then(exito, error);
+  };
+  
+
+  module.exports = rol;

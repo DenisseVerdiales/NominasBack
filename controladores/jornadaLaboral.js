@@ -3,12 +3,12 @@ const app = require('express');
 const router = app.Router();
 
 const validarToken = require('../utilidades/verificarToken');
-const tipoEmpleadoModelo = require('./../modelos/tipoEmpleado-modelo');
+const jornadaLaboralModel = require('./../modelos/jornadaLaboral-modelo');
 
 
 router.get('/', function (req, res) {
-    tipoEmpleadoModelo.ObtenerActivos(function (tipoEmpleado) {
-      return res.status(200).send(tipoEmpleado);
+    jornadaLaboralModel.ObtenerActivos(function (jornadaLaboral) {
+      return res.status(200).send(jornadaLaboral);
     }, function (error) {
       console.log("error",error);
       return res.status(404).send(error);

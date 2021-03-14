@@ -61,4 +61,14 @@ sesiones.CerrarSesion = function (token, usuarioId, exito, error) {
     })
 }
 
+sesiones.ObtenerPorToken = function (token, exito, error) {
+  sesiones.findOne({
+    where: {
+      token: token,
+      activo: true
+    }
+  }).then(exito, error);
+}
+
+
 module.exports = sesiones;
