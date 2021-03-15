@@ -53,4 +53,68 @@ const empleados = sequelize.define('Empleado', {
     empleados.create(empleado).then(exito, error);
   };
 
+  empleados.ObtenerActivos = function (exito, error) {
+    empleados
+    .findAll({
+      where: {
+        activo: true
+      },
+      attributes: {
+        include: [
+          [
+            Sequelize.fn(
+              "CONCAT",
+              Sequelize.col("nombre"),
+              " ",
+              Sequelize.col("apellidoPaterno"),
+              " ",
+              Sequelize.col("apellidoMaterno")
+            ),
+            "nombreEmpleado",
+          ],
+        ],
+      },
+      include: [
+        {
+          model: tipoEmpleadoModelo,
+          as: "TipoEmpleado",
+          required: true,
+        },
+        {
+          model: rolModelo,
+          as: "Rol",
+          required: true,
+        },
+      ],
+    })
+    .then(exito, error);
+  };
+
+  empleados.ObtenerPorId = function (empleadoId, exito, error) {
+    empleados
+      .findOne({ where: { Id:  empleadoId  } })
+      .then(exito, error);
+  };
+
+  empleados.ActualizarPorID = function (empleado, exito, error) {
+    empleados
+      .update(empleado, { where: { id: empleado.id  } })
+      .spread(exito)
+      .catch(error);
+  };
+
+  empleados.DesactivarPorID = function (empleado, exito, error) {
+    empleados
+      .update(
+        {
+          activo: false,
+          fechaModificacion: empleado.fechaModificacion,
+          usuarioModificacionID: empleado.usuarioModificacionId,
+        },
+        { where: { id: empleado.id } }
+      )
+      .spread(exito)
+      .catch(error);
+  };
+
 module.exports = empleados;

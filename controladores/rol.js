@@ -6,7 +6,7 @@ const validarToken = require('../utilidades/verificarToken');
 const rolModelo = require('./../modelos/rol-modelo');
 
 
-router.get('/', function (req, res) {
+router.get('/', validarToken,function (req, res) {
     rolModelo.ObtenerActivos(function (rol) {
       return res.status(200).send(rol);
     }, function (error) {

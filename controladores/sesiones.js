@@ -8,7 +8,6 @@ const usuariosModelo = require('./../modelos/usuarios-modelo');
 
 router.post('/iniciar', function (req, res) {
     const usuario = req.body;
-    console.log("BACK",req.body);
     usuariosModelo.ObtenerPorNombreContrasena(usuario, async function (usuarioBd) {
       if (usuarioBd !== null) {
         if (usuario.contrasena == usuarioBd.contrasena) {
@@ -30,11 +29,10 @@ router.post('/iniciar', function (req, res) {
     }, function (error) {
       return res.status(501).send(error);
     });
-  });
+});
 
 
 router.post('/salir', function (req, res) {
-    console.log("SALIR",req.body);
   sesionesModelo.CerrarSesion(req.body.token, req.body.id, function () {
       return res.status(200).send();
   }, function (error) {
