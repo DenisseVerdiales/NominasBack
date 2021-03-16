@@ -1,48 +1,42 @@
 'use strict';
 const sequelize = require('./../bdconfig');
 const Sequelize = require('sequelize');
+const usuarioModelo = require('../modelos/usuarios-modelo');
+const operadores = Sequelize.Op;
 
-const TipoBono = sequelize.define('TipoBono', {
+const tipoBono = sequelize.define('TipoBono', {
     id: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
       },
-      nombreBono: {
-        type: Sequelize.DataTypes.STRING(50),
-        allowNull: false,
-        defaultValue:''
-      },
-      activo: {
-        type: Sequelize.DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
-      },
-      fechaCreacion: {
-        type: Sequelize.DataTypes.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      usuarioCreacionId: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        references: {
-          model: 'Usuarios',
-          key: 'id'
-        }
-      },
-      fechaModificacion: {
-        type: Sequelize.DataTypes.DATE,
-        allowNull: true
-      },
-      usuarioModificacionId: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        references: {
-          model: 'Usuarios',
-          key: 'id'
-        }
-      }
+      nombreBono: Sequelize.STRING,
+      activo: Sequelize.BOOLEAN,
+      fechaCreacion: Sequelize.DATE,
+      usuarioCreacionId: Sequelize.INTEGER,
+      fechaModificacion: Sequelize.INTEGER,
+      usuarioModificacionId: Sequelize.INTEGER,
+  },{
+    timestamps: false,
+    freezeTableName: true
   });
-  module.exports = TipoBono;
+
+  tipoBono.belongsTo(usuarioModelo, {
+    as: "Usuarios",
+    foreignKey: { fieldName: "usuarioCreacionId" },
+  });
+
+  tipoBono.ObtenerPorTipoBono = function (tipoBonoNombre, exito, error) {
+    tipoBono
+      .findOne({
+        where: {
+          activo: true ,
+          [operadores.and]: [
+            { nombreBono: tipoBonoNombre },
+          ],
+        },
+      })
+      .then(exito, error);
+  };
+
+  module.exports = tipoBono;

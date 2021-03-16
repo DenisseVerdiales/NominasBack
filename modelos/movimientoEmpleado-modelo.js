@@ -1,68 +1,73 @@
 'use strict';
 const sequelize = require('./../bdconfig');
 const Sequelize = require('sequelize');
+const empleadoModelo = require('../modelos/empleado-modelo')
+const rolModelo = require('../modelos/rol-modelo');
+const usuarioModelo = require('../modelos/usuarios-modelo');
 
-const MovimientoEmpleado = sequelize.define('MovimientoEmpleado', {
+const movimientoEmpleado = sequelize.define('MovimientoEmpleado', {
     id: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
       },
-      empleadoId: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        defaultValue:0
-      },
-      cantidadEntregasRecorrido: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        defaultValue:0
-      },
-      tipoRolCubirtoId: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        defaultValue:0
-      },
-      fechaMovimiento: {
-        type: Sequelize.DataTypes.DATE,
-        allowNull: false,
-        defaultValue:Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      importeTotalRecorrido: {
-        type: Sequelize.DataTypes.DECIMAL(10,0),
-        allowNull: true,
-        defaultValue:0.0
-      },
-      activo: {
-        type: Sequelize.DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
-      },
-      fechaCreacion: {
-        type: Sequelize.DataTypes.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
-      },
-      usuarioCreacionId: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        references: {
-          model: 'Usuarios',
-          key: 'id'
-        }
-      },
-      fechaModificacion: {
-        type: Sequelize.DataTypes.DATE,
-        allowNull: true
-      },
-      usuarioModificacionId: {
-        type: Sequelize.DataTypes.BIGINT,
-        allowNull: false,
-        references: {
-          model: 'Usuarios',
-          key: 'id'
-        }
-      }
+      empleadoId: Sequelize.INTEGER,
+      cantidadEntregasRecorrido: Sequelize.INTEGER,
+      tipoRolCubirtoId: Sequelize.INTEGER,
+      fechaMovimiento: Sequelize.DATE,
+      importeTotalRecorrido: Sequelize.DECIMAL,
+      activo: Sequelize.BOOLEAN,
+      fechaCreacion: Sequelize.DATE,
+      usuarioCreacionId: Sequelize.INTEGER,
+      fechaModificacion: Sequelize.DATE,
+      usuarioModificacionId: Sequelize.INTEGER,
+  },{
+    timestamps: false,
+    freezeTableName: true
   });
-module.exports = MovimientoEmpleado;
+
+
+movimientoEmpleado.belongsTo(empleadoModelo, {
+  as: "Empleado",
+  foreignKey: { fieldName: "empleadoId" },
+});
+movimientoEmpleado.belongsTo(rolModelo, {
+  as: "Rol",
+  foreignKey: { fieldName: "tipoRolCubirtoId" },
+});
+movimientoEmpleado.belongsTo(usuarioModelo, {
+  as: "Usuarios",
+  foreignKey: { fieldName: "usuarioCreacionId" },
+});
+
+movimientoEmpleado.Crear = function (movimiento, exito, error) {
+  movimientoEmpleado.create(movimiento).then(exito, error);
+};
+
+movimientoEmpleado.ObtenerActivos = function (exito, error) {
+  movimientoEmpleado
+  .findAll({
+    where: {
+      activo: true
+    },
+    include:
+    [
+        {
+          model: empleadoModelo,
+          as: 'Empleado',
+          order: [
+              ['nombre', 'ASC'],
+          ],
+          attributes:
+          [
+              [Sequelize.fn('CONCAT', Sequelize.col('Empleado.nombre'), ' ', Sequelize.col('Empleado.apellidoPaterno'), ' ', Sequelize.col('Empleado.apellidoMaterno')), 'Nombre']
+          ],
+        
+          required: true
+        },
+    ]
+  })
+  .then(exito, error);
+};
+
+module.exports = movimientoEmpleado;

@@ -1,0 +1,34 @@
+'use strict';
+const app = require('express');
+const router = app.Router();
+
+const validarToken = require('../utilidades/verificarToken');
+const tipoBonoModelo = require('./../modelos/tipoBono-modelo');
+const bonoModelo = require('./../modelos/bono-modelo');
+
+router.get('/bono',validarToken, function (req, res) {
+console.log("TIPO BONO",req.query.tipoBono);
+tipoBonoModelo.ObtenerPorTipoBono(req.query.tipoBono, function (tipoBono) {
+    console.log("RESPUESTA TIPO BONO",tipoBono);
+    if (tipoBono){
+        bonoModelo.ObtenerPorTipoBonoId(tipoBono.id, function (bono) {
+            if(bono){
+                return res.status(200).send(bono);
+            }else{
+                return res.status(404).send();
+            }
+
+        },function (error) {
+            return res.status(501).send(error);
+        });
+    }
+    else{
+        return res.status(404).send();
+    }
+  
+}, function (error) {
+    return res.status(501).send(error);
+});
+});
+
+module.exports = router;

@@ -5,6 +5,7 @@ const tipoEmpleadoModelo = require('./tipoEmpleado-modelo');
 const rolModelo = require('./rol-modelo');
 const jornadaLaboralModelo = require('./jornadaLaboral-modelo');
 const usuariosModelo = require('./usuarios-modelo');
+const operadores = Sequelize.Op;
 
 const empleados = sequelize.define('Empleado', {
     id: {
@@ -92,7 +93,14 @@ const empleados = sequelize.define('Empleado', {
 
   empleados.ObtenerPorId = function (empleadoId, exito, error) {
     empleados
-      .findOne({ where: { Id:  empleadoId  } })
+      .findOne({
+        where: {
+          activo: true ,
+          [operadores.and]: [
+            { id: empleadoId },
+          ],
+        },
+      })
       .then(exito, error);
   };
 

@@ -11,6 +11,8 @@ rutas.Rutas = [
 { ruta: '/tipoEmpleado', controlador: controladores.tipoEmpleado},
 { ruta: '/jornadaLaboral', controlador: controladores.jornadaLaboral},
 { ruta: '/rol', controlador: controladores.rol},
+{ ruta: '/movimientos', controlador: controladores.movimientos},
+{ ruta: '/tipoBono', controlador: controladores.tipoBono},
 ];
 
 module.exports = rutas;;
