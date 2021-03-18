@@ -5,6 +5,7 @@ const router = app.Router();
 const validarToken = require('../utilidades/verificarToken');
 const empleadosModelo = require('./../modelos/empleado-modelo');
 const respuestaModelo = require('./../modelos/respuesta-modelo');
+const bd = require('../bdconfig');
 
 
 router.get('/', validarToken,function (req, res) {
@@ -15,8 +16,8 @@ router.get('/', validarToken,function (req, res) {
   });
 });
 
-router.get('/empleadoId', function (req, res) {
-  empleadosModelo.ObtenerPorId(req.query.id, function (empleado) {
+router.get('/empleadoId', validarToken, function (req, res) {
+  empleadosModelo.ObtenerPorIdReporte(req.query.id, function (empleado) {
     if (empleado)
       return res.status(200).send(empleado);
     else
@@ -26,7 +27,30 @@ router.get('/empleadoId', function (req, res) {
   });
 });
 
-router.post('/', function (req, res) {
+router.get('/siguienteId', validarToken, function (req, res) {
+  empleadosModelo.ObtenerSiguienteID(function (empleado) {
+    if (empleado)
+      return res.status(200).send(empleado);
+    else
+      return res.status(404).send();
+  }, function (error) {
+    return res.status(501).send(error);
+  });
+});
+
+router.get('/reporte', validarToken, async function (req, res) {
+    let sp = `CALL reporteEmpleado(${req.query.pIdEmpleado}, ${req.query.pMes});`
+    let reporte = await bd.query(sp, {})
+    if (reporte)
+      return res.status(200).send(reporte);
+    else
+      return res.status(404).send();
+  }, function (error) {
+    return res.status(501).send(error);
+  });
+
+
+router.post('/', validarToken ,function (req, res) {
     var empleado = req.body;
     empleado.activo= true;
     empleado.fechaCreacion = new Date();
@@ -43,7 +67,7 @@ router.post('/', function (req, res) {
     });
 });
 
-router.put('/', function (req, res) {
+router.put('/',validarToken, function (req, res) {
   var empleado = req.body;
   empleado.fechaModificacion = new Date();
   empleadosModelo.ActualizarPorID(empleado, function (empleado) {
@@ -55,7 +79,7 @@ router.put('/', function (req, res) {
   });
 })
 
-router.delete('/:id/:usuarioModificacionId', function (req, res) {
+router.delete('/:id/:usuarioModificacionId',validarToken, function (req, res) {
   var empleado = req.params;
   empleado.FechaModificacion = new Date();
   empleadosModelo.DesactivarPorID(empleado, function (respuesta) {

@@ -14,6 +14,29 @@ router.get('/', validarToken,function (req, res) {
     });
   });
 
+  router.get('/movimientoId',validarToken, function (req, res) {
+    movimientoEmpleadosModelo.ObtenerActivoPorID(req.query.id, function (movimiento) {
+      if (movimiento)
+        return res.status(200).send(movimiento);
+      else
+        return res.status(404).send();
+    }, function (error) {
+      return res.status(501).send(error);
+    });
+  });
+
+  router.get('/movimientoFecha',validarToken, function (req, res) {
+    movimientoEmpleadosModelo.ObtenerActivoPorFecha(req.query.fechaMovimiento, function (movimiento) {
+      if (movimiento){
+        return res.status(200).send(movimiento);
+      }
+      else
+        return res.status(404).send();
+    }, function (error) {
+      return res.status(501).send(error);
+    });
+  });
+
 router.post('/', validarToken, function (req, res) {
     var movimiento = req.body;
     movimiento.activo= true;
@@ -30,6 +53,33 @@ router.post('/', validarToken, function (req, res) {
       return res.status(501).send(error);
     });
 });
+
+router.put('/',validarToken, function (req, res) {
+  var movimiento = req.body;
+  movimiento.fechaModificacion = new Date();
+  movimientoEmpleadosModelo.ActualizarPorID(movimiento, function () {
+    respuestaModelo.status = 200;
+    respuestaModelo.mensaje = "Se actualizó correctamente la información del empleado.";
+    return res.status(200).send(respuestaModelo);
+  }, function (error) {
+    return res.status(501).send(error);
+  });
+})
+
+router.delete('/:id/:usuarioModificacionId',validarToken, function (req, res) {
+  var movimiento = req.params;
+  movimiento.FechaModificacion = new Date();
+  movimientoEmpleadosModelo.DesactivarPorID(movimiento, function (respuesta) {
+    if (!respuesta) {
+      return res.status(404).send("No se encontró el movimiento.");
+    }
+    respuestaModelo.status = 200;
+    respuestaModelo.mensaje = "Se actualizó correctamente la información del movimiento.";
+    return res.status(200).send(respuestaModelo);
+  }, function (error) {
+    return res.status(501).send(error);
+  });
+})
 
 
 module.exports = router;

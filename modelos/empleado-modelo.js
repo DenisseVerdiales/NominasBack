@@ -104,6 +104,16 @@ const empleados = sequelize.define('Empleado', {
       .then(exito, error);
   };
 
+  empleados.ObtenerSiguienteID = function ( exito, error) {
+    empleados
+      .findAll({
+        attributes: [ Sequelize.fn('max', Sequelize.col('id'))],
+        raw: true,
+      })
+      .then(exito, error);
+  };
+
+
   empleados.ActualizarPorID = function (empleado, exito, error) {
     empleados
       .update(empleado, { where: { id: empleado.id  } })

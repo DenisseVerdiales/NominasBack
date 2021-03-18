@@ -7,9 +7,7 @@ const tipoBonoModelo = require('./../modelos/tipoBono-modelo');
 const bonoModelo = require('./../modelos/bono-modelo');
 
 router.get('/bono',validarToken, function (req, res) {
-console.log("TIPO BONO",req.query.tipoBono);
 tipoBonoModelo.ObtenerPorTipoBono(req.query.tipoBono, function (tipoBono) {
-    console.log("RESPUESTA TIPO BONO",tipoBono);
     if (tipoBono){
         bonoModelo.ObtenerPorTipoBonoId(tipoBono.id, function (bono) {
             if(bono){
