@@ -1,6 +1,7 @@
 const respuesta = {
     status : "",
-    mensaje : ""
+    mensaje : "",
+    icono:""
 };
 
 module.exports = respuesta;

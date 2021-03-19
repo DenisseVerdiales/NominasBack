@@ -31,10 +31,6 @@ movimientoEmpleado.belongsTo(empleadoModelo, {
   as: "Empleado",
   foreignKey: { fieldName: "empleadoId" },
 });
-movimientoEmpleado.belongsTo(rolModelo, {
-  as: "Rol",
-  foreignKey: { fieldName: "tipoRolCubirtoId" },
-});
 movimientoEmpleado.belongsTo(usuarioModelo, {
   as: "Usuarios",
   foreignKey: { fieldName: "usuarioCreacionId" },
@@ -95,7 +91,7 @@ movimientoEmpleado.ObtenerActivoPorFecha = function (movimientoFecha, exito, err
     where: {
       activo: true,
       [operadores.and]: [
-        { fechaMovimiento:  { [operadores.lt]: movimientoFecha }},
+        { fechaMovimiento:  { [operadores.like]: movimientoFecha }},
       ],
     },
     include:
@@ -125,7 +121,7 @@ movimientoEmpleado.DesactivarPorID = function (movimiento, exito, error) {
         fechaModificacion: movimiento.fechaModificacion,
         usuarioModificacionID: movimiento.usuarioModificacionId,
       },
-      { where: { empleadoId: movimiento.id } }
+      { where: { id: movimiento.id } }
     )
     .spread(exito)
     .catch(error);
